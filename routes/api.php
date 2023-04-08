@@ -8,6 +8,7 @@ use App\Http\Controllers\AuditorController;
 use App\Http\Controllers\Api\Stores\subCategories;
 use App\Http\Controllers\ContentCreatorsController;
 use App\Http\Controllers\Api\Stores\ProductCategories;
+use App\Http\Controllers\Api\Stores\productController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::prefix('store')->group(function(){
     Route::middleware('auth:store,store-api')->group(function (){
         Route::resource('/categories', ProductCategories::class);
         Route::resource('/subcategories', subCategories::class);
+        Route::resource('/product',productController::class);
 
     });
 });
