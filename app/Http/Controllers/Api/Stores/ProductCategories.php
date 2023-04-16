@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api\Stores;
 
+use Error;
+use Exception;
 use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
-use Exception;
-use Error;
 
 class ProductCategories extends Controller
 {
@@ -51,7 +52,7 @@ class ProductCategories extends Controller
         //defining the rules
         $validator = Validator::make($request->all(),[
             'name' => ['required','min:5', 'max:255', 'string'],
-            'slug' => ['required', 'string']
+            
         ]);
 
 
@@ -64,18 +65,15 @@ class ProductCategories extends Controller
 
         #create
         try {
-            $create_category = Category::create($validator->validated());
-
-            if ($create_category){
-                return response()->json([
-                    'data' =>$create_category
-                ]);
-            } else {
-                return response()->json([
-                    'error' =>'something went wrong category could not be created '
-
-                ],500);
-            }
+           $category = new category();
+           $category->name = $request->name;
+           $category->slug = Str::slug($request->slug);
+           $category->save();
+           return response()->json([
+            'status'=>"success",
+            'message'=>"category successfully added",
+            "category"=>$category->name
+           ]);
 
             }catch (Exception $e) {
                 return response()->json([
@@ -91,20 +89,20 @@ class ProductCategories extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($slug)
     {
         //
         try{
-            $category = Category::find($id);
+            $category = Category::where('slug',$slug)->firstOrFail();
 
             if($category != 'null'){
                 return response()->json([
                     'data' => $category
-                ]);
+                ],200);
             } else{
                 return response()->json([
                     'message' => 'category does not exits'
-                ]);
+                ],404);
             }
 
         } catch(\Exception $e){
@@ -121,13 +119,13 @@ class ProductCategories extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $slug)
     {
         //
          #validate category name 
          $validator = Validator::make($request->all(),[
             'name' => ["required", "string", "max:255"],
-            'slug' => ["required", "string"]
+            
         ]);
           #validate category name   
          if($validator->fails()){
@@ -138,31 +136,16 @@ class ProductCategories extends Controller
             #try to update user 
         try{
             #get the category 
-            $update_category = Category::find($id);
+            $update_category = Category::where('slug',$slug)->firstOrFail();
             #check if any error was found
-            if ($update_category !='null') {
-                #update the record
-                if($update_category->update([
-                    'name' => $request->name,
-                    'slug' => $request->slug
-                ])) {
-                    #return a success 
-                    return response()->json([
-                        'message' => 'record updated ',
-                        'data' => $update_category
-                    ]);
-                }else{
-                       return response()->json([
-                        'errors' =>'an error occured while updating record '
-                       ], 500);
-                }
-
-
-            }else {
-                return response()->json([
-                   'message' => 'category could not be updated'
-                ]);
-            }
+            $update_category->name = $request->name;
+            $update_category->slug = Str::slug($request->name);
+            $update_category->update();
+            return response()->json([
+                "status"=>"success",
+                "message"=>"category updated",
+                "update_category" =>$update_category->name
+            ]);
         }catch(\Exception $e){
             return response()->json([
                 'errors' => 'an exceptional error has occured'
@@ -177,19 +160,16 @@ class ProductCategories extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($slug)
     {
         //
         try{
-            if (Category::destroy($id)){
-                return response()->json([
-                    'message' => 'Category Deleted successfully'
-                ]);
-            }  else {
-                return response()->json([
-                    'errors' => 'Category could not be deleted'
-                ], 401);
-            }
+           $category= Category::where('slug',$slug)->delete();
+            return response()->json([
+                "status"=>"success",
+                "message"=>"category successfully deleted",
+            ]);
+
         } catch(\Exception $e){
             return response()->json([
                 'errors' => 'an exceptional error has occured'
