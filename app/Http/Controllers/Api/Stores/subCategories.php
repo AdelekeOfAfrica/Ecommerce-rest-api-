@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Stores;
 use Error;
 use Exception;
 use App\Models\subCategory;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -51,8 +52,7 @@ class subCategories extends Controller
         //
         $validator = Validator::make($request->all(),[
             'category_id' =>['required'],
-            'name' => ['required','min:5', 'max:255', 'string'],
-            'slug' =>['required','string']
+            'name' => ['required','min:2', 'max:255', 'string']
         ]);
 
 
@@ -65,20 +65,20 @@ class subCategories extends Controller
 
         #create
         try {
-            $saveSubcategory = subCategory::create($validator->validated());
+           $subcategory = new subCategory();
+           $subcategory->category_id = $request->category_id;
+           $subcategory->name = $request->name;
+           $subcategory->slug = Str::slug($request->name);
+           $subcategory->save();
 
-            if ($saveSubcategory){
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'status Successfully saved',
-                    'data' =>$saveSubcategory
-                ]);
-            } else {
-                return response()->json([
-                    'error' =>'something went wrong subcategory could not be created '
+           
+           $response = [
+            'id'=>$subcategory->id,
+            'subcategory'=>$subcategory,
+            'message'=>'product created successfully'
+        ];
 
-                ],500);
-            }
+        return response()->json($response)->setStatusCode(200);
 
             }catch (Exception $e) {
                 return response()->json([
@@ -88,17 +88,18 @@ class subCategories extends Controller
             return response()->json([
                 'errors' => $e->getMessage()
             ], 500);
+            
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+    public function show( $slug)
     {
         //
         try{
-            $subcategory = subCategory::with('category')->find($id);
+            $subcategory = subCategory::where('slug',$slug)->with('category')->firstOrFail();
 
             if($subcategory != 'null'){
                 return response()->json([
@@ -126,13 +127,13 @@ class subCategories extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,  $id)
+    public function update(Request $request, $slug)
     {
         //
         $validator = Validator::make($request->all(),[
             'category_id' =>['required'],
             'name' => ['required','min:5', 'max:255', 'string'],
-            'slug' =>['required','string'],
+        
         ]);
 
 
@@ -145,25 +146,18 @@ class subCategories extends Controller
 
         #create
         try {
-               $subcategory = subCategory::find($id);
-               if($subcategory != null){
-                    if($subcategory->update($validator->validated())){
-                        return response()->json([
-                            'status' => 'success',
-                            'message' => 'subcategory Successfully saved',
-                            'data' =>$subcategory
-                        ]);
-                    }
-                } else{
-
-                    return response()->json([
-                        'status' => 'success',
-                        'message' => 'subcategory not found',
-             
-                    ]);
-                    
-                }
-
+            $subcategory = subCategory::where('slug',$slug)->firstOrFail();
+            $subcategory->category_id = $request->category_id;
+            $subcategory->name = $request->name;
+            $subcategory->slug = Str::slug($request->name);
+            $subcategory->update();
+            $response = [
+                'id'=>$subcategory->id,
+                'subcategory'=>$subcategory,
+                'message'=>'product updated successfully'
+            ];
+    
+            return response()->json($response)->setStatusCode(200);  
             }catch (Exception $e) {
                 return response()->json([
                     'errors' => $e->getMessage()
@@ -178,20 +172,16 @@ class subCategories extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy( $slug)
     {
         //
         try{
-            if (subCategory::destroy($id)){
-                return response()->json([
-                    'status' => 'success', 
-                    'message' => 'SubCategory Deleted successfully'
-                ]);
-            }  else {
-                return response()->json([
-                    'errors' => 'SubCategory could not be deleted'
-                ], 401);
-            }
+           $subcategory = subCategory::where('slug',$slug)->delete();
+           return response()->json([
+            "status"=>"sucess",
+            "message"=>"subcategory successfully deleted",
+            
+           ],200);
         } catch(\Exception $e){
             return response()->json([
                 'errors' => 'an exceptional error has occured'

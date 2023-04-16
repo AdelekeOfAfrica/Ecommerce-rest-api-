@@ -47,7 +47,15 @@ Route::prefix('store')->group(function(){
 
     Route::middleware('auth:store,store-api')->group(function (){
         Route::resource('/categories', ProductCategories::class);
-        Route::resource('/subcategories', subCategories::class);
+   
+
+        // Route::resource('/subcategories', subCategories::class);
+        Route::get('/subcategories',[subCategories::class,'index']);
+        Route::put('/subcategories/{subcategory:slug}',[subCategories::class,'update']);
+        Route::get('/subcategories/{subcategory:slug}',[subCategories::class,'show']);
+        Route::delete('/subcategories/{subcategory:slug}',[subCategories::class,'destroy']);
+
+
         Route::post('/product',[productController::class,'store']);
         Route::get('/product',[productController::class,'index']);
         Route::get('/product/{product:slug}',[productController::class,'show']);
