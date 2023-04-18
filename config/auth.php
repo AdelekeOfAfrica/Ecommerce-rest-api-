@@ -57,8 +57,7 @@ return [
             'driver' => 'session',
             'provider' => 'stores'
         ],
-
-
+    
 
         'admin-api' =>[
             'driver' => 'sanctum',
@@ -75,6 +74,10 @@ return [
         'store-api' =>[
             'driver' => 'sanctum',
             'provider' => 'stores'
+        ],
+        'user-api' =>[
+            'driver' => 'sanctum',
+            'provider' => 'users'
         ],
     ],
 
@@ -116,7 +119,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Stores::class,
         ],
-
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

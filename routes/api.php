@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StoresController;
 use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Api\Stores\subCategories;
 use App\Http\Controllers\ContentCreatorsController;
 use App\Http\Controllers\Api\Stores\ProductCategories;
@@ -21,29 +22,42 @@ use App\Http\Controllers\Api\Stores\productController;
 |
 */
 
+Route::prefix('user')->group(function(){
+    Route::post('/register',[UserAuthController::class,'register']);
+    Route::post('/login',[UserAuthController::class,'login']);
+    Route::post('/logout',[UserAuthController::class,'logout']);
+    Route::middleware('auth:user-api')->group(function(){
+    });
+});
+
 Route::prefix('admin')->group(function(){
     Route::post('/register',[AdminController::class, 'register']); 
-    Route::post('/login',[AdminController::class, 'login']); 
+    Route::post('/login',[AdminController::class, 'login']);
+    Route::post('/logout',[AdminController::class, 'logout']);  
+});
+
+Route::prefix('auditor')->group(function(){
+    Route::post('/register',[AuditorController::class, 'register']); 
+    Route::post('/login',[AuditorController::class, 'login']);
+    Route::post('/logout',[AuditorController::class, 'logout']); 
 });
 
 Route::prefix('auditor')->group(function(){
     Route::post('/register',[AuditorController::class, 'register']); 
     Route::post('/login',[AuditorController::class, 'login']); 
-});
-
-Route::prefix('auditor')->group(function(){
-    Route::post('/register',[AuditorController::class, 'register']); 
-    Route::post('/login',[AuditorController::class, 'login']); 
+    Route::post('/logout',[AuditorController::class, 'logout']);
 });
 
 Route::prefix('contentCreator')->group(function(){
     Route::post('/register',[ContentCreatorsController::class, 'register']); 
     Route::post('/login',[ContentCreatorsController::class, 'login']); 
+    Route::post('/logout',[ContentCreatorsController::class, 'logout']); 
 });
 
 Route::prefix('store')->group(function(){
     Route::post('/register',[StoresController::class, 'register']); 
-    Route::post('/login',[StoresController::class, 'login']); 
+    Route::post('/login',[StoresController::class, 'login']);
+    Route::post('/logout',[StoresController::class, 'logout']);  
 
     Route::middleware('auth:store,store-api')->group(function (){
         Route::get('/categories',[ProductCategories::class,'index']);
