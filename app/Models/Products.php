@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Cart;
+use App\Models\Products;
 use App\Models\subCategory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
@@ -30,5 +32,9 @@ class Products extends Model
 
     public function sub_categories() {
         return $this->belongsTo(subCategory::class,'subcategory_id');
+    }
+
+    public function carts(){
+        return $this->hasMany(Cart::class);
     }
 }
