@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\cartController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoresController;
 use App\Http\Controllers\AuditorController;
 use App\Http\Controllers\UserAuthController;
@@ -28,10 +29,14 @@ Route::prefix('user')->group(function(){
     Route::post('/login',[UserAuthController::class,'login']);
     Route::post('/logout',[UserAuthController::class,'logout']);
     Route::middleware('auth:user-api')->group(function(){
+       //cart details 
         Route::post('/cart',[cartController::class,'store']);
         Route::get('/user-cart',[CartController::class,'index']);
         Route::put('/cart/{cart_id}/{scope}', [CartController::class, 'update']);
         Route::delete('/cart/{cart_id}', [CartController::class, 'destroy']);
+        
+        //order details 
+        Route::post('/order',[OrderController::class,'store']);
     });
 });
 
