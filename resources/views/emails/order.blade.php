@@ -1,5 +1,18 @@
 {{$order->firstname}}
 {{$order->lastname}}
-{{$order->email}}
+You made an order recently on our website 
 
-lest use this one to test first 
+this is your total price details 
+<tr>
+<td colspan="3"></td>
+<td style="font-size:15px; font-weight:bold;">Tax: N{{$order->tax}}</td>
+</tr>
+
+<tr>
+<td colspan="3"></td>
+<td style="font-size:15px; font-weight:bold;">Shipping:Free shipping </td>
+</tr>
+
+<tr>
+<td colspan="3"></td>
+<td style="font-size:22px; font-weight:bold;">Total: N{{$order->subtotal}}</td>
