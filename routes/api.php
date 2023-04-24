@@ -7,9 +7,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoresController;
 use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Api\Stores\subCategories;
 use App\Http\Controllers\ContentCreatorsController;
+use App\Http\Controllers\Api\Admin\VerifyTransaction;
 use App\Http\Controllers\Api\Stores\ProductCategories;
 use App\Http\Controllers\Api\Stores\productController;
 
@@ -37,20 +39,24 @@ Route::prefix('user')->group(function(){
         
         //order details 
         Route::post('/order',[OrderController::class,'store']);
+
+     //make payment with card, this is going to be used with blade component   
+        Route::post('/make-payment',[PaystackController::class,'pay']);
+        
     });
 });
 
 Route::prefix('admin')->group(function(){
     Route::post('/register',[AdminController::class, 'register']); 
     Route::post('/login',[AdminController::class, 'login']);
-    Route::post('/logout',[AdminController::class, 'logout']);  
+    Route::post('/logout',[AdminController::class, 'logout']); 
+    Route::middleware('auth:store,admin-api')->group(function(){
+       Route::get('/verify-payment',[VerifyTransaction::class,'verify_payment']);
+
+    }); 
 });
 
-Route::prefix('auditor')->group(function(){
-    Route::post('/register',[AuditorController::class, 'register']); 
-    Route::post('/login',[AuditorController::class, 'login']);
-    Route::post('/logout',[AuditorController::class, 'logout']); 
-});
+
 
 Route::prefix('auditor')->group(function(){
     Route::post('/register',[AuditorController::class, 'register']); 
