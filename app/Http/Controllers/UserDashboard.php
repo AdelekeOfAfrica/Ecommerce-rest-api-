@@ -6,6 +6,7 @@ use Error;
 use Exception;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Jobs\UserCancellationJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -57,10 +58,11 @@ class UserDashboard extends Controller
 
                 $order->cancelled_date =  DB::raw('CURRENT_DATE');
                 $order->status = 'canceled';
-                $order->save();
-                
+                $order->save();   
             }
-    
+            
+            UserCancellationJob::dispatch($order)->delay(now()->addSeconds(5));
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Order successfully cancelled',

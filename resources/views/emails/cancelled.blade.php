@@ -1,0 +1,1 @@
+hi {{$order->firstname}} you just cancelled your order on our website.

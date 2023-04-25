@@ -15,6 +15,7 @@ use App\Http\Controllers\ContentCreatorsController;
 use App\Http\Controllers\Api\Admin\VerifyTransaction;
 use App\Http\Controllers\Api\Stores\ProductCategories;
 use App\Http\Controllers\Api\Stores\productController;
+use App\Http\Controllers\Api\Stores\OrderStatusController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +99,11 @@ Route::prefix('store')->group(function(){
         Route::get('/product/{product:slug}',[productController::class,'show']);
         Route::put('/product/{product:slug}',[productController::class,'update']);
         Route::delete('/product/{product:slug}',[productController::class,'destroy']);
+
+        //user orders details 
+        Route::get('/orders',[OrderStatusController::class,'allOrders']);
+        Route::get('/cancelled-orders',[OrderStatusController::class,'cancelledOrders']);
+        Route::post('/order/delivered/{order_id}',[OrderStatusController::class,'deliveredorder']);
     
 
     });

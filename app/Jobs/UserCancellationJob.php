@@ -3,8 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\Order;
-use App\Mail\OrderMail;
 use Illuminate\Bus\Queueable;
+use App\Jobs\UserCancellationJob;
+use App\Mail\UserCancellationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,11 +13,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class OrderJob implements ShouldQueue
+class UserCancellationJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     public Order $order;
-
     /**
      * Create a new job instance.
      */
@@ -32,7 +32,6 @@ class OrderJob implements ShouldQueue
     public function handle(): void
     {
         //
-        
-        Mail::to($this->order->email)->send(new OrderMail($this->order)); 
+        Mail::to($this->order->email)->send(new UserCancellationMail($this->order));
     }
 }
