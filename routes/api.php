@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\VerifyTransaction;
 use App\Http\Controllers\Api\Stores\ProductCategories;
 use App\Http\Controllers\Api\Stores\productController;
 use App\Http\Controllers\Api\Stores\OrderStatusController;
+use App\Http\Controllers\Api\contentCreator\BlogCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +74,14 @@ Route::prefix('auditor')->group(function(){
 Route::prefix('contentCreator')->group(function(){
     Route::post('/register',[ContentCreatorsController::class, 'register']); 
     Route::post('/login',[ContentCreatorsController::class, 'login']); 
-    Route::post('/logout',[ContentCreatorsController::class, 'logout']); 
+    Route::post('/logout',[ContentCreatorsController::class, 'logout']);
+    Route::middleware('auth:contentCreator,contentCreator-api')->group(function(){
+        Route::get('/blog_categories',[BlogCategoryController::class,'index']);
+        Route::post('/blog_categories',[BlogCategoryController::class,'store']);
+        Route::get('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'show']);
+        Route::put('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'update']);
+        Route::delete('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'destroy']); 
+    });
 });
 
 Route::prefix('store')->group(function(){
@@ -109,9 +117,6 @@ Route::prefix('store')->group(function(){
     });
 });
 
-Route::post('/login', function(){
-    return 'this is working';
-});
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
