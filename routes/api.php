@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserDashboard;
 use App\Http\Controllers\cartController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
@@ -39,6 +40,10 @@ Route::prefix('user')->group(function(){
         
         //order details 
         Route::post('/order',[OrderController::class,'store']);
+        //dashboard 
+        Route::get('/dashboard',[UserDashboard::class, 'index']);
+        Route::post('/cancel_order/{order_id}',[UserDashboard::class, 'cancelOrder']);
+        
 
      //make payment with card, this is going to be used with blade component   
         Route::post('/make-payment',[PaystackController::class,'pay']);
