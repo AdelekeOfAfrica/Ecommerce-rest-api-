@@ -18,6 +18,8 @@ return new class extends Migration
             $table->foreignIdFor(BlogCategory::class)->constrained();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string ('image')->nullable();
+            $table->string('images')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
         });

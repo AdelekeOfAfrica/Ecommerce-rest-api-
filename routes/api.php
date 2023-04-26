@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoresController;
 use App\Http\Controllers\AuditorController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PaystackController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Api\Stores\subCategories;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\Admin\VerifyTransaction;
 use App\Http\Controllers\Api\Stores\ProductCategories;
 use App\Http\Controllers\Api\Stores\productController;
 use App\Http\Controllers\Api\Stores\OrderStatusController;
+use App\Http\Controllers\Api\contentCreator\BlogPostController;
 use App\Http\Controllers\Api\contentCreator\BlogCategoryController;
 
 /*
@@ -49,6 +51,9 @@ Route::prefix('user')->group(function(){
 
      //make payment with card, this is going to be used with blade component   
         Route::post('/make-payment',[PaystackController::class,'pay']);
+     //creating the comment section 
+     Route::post('/comment',[CommentController::class,'store']);
+     Route::delete('/comment/{id}',[CommentController::class,'destroy']);
         
     });
 });
@@ -80,7 +85,13 @@ Route::prefix('contentCreator')->group(function(){
         Route::post('/blog_categories',[BlogCategoryController::class,'store']);
         Route::get('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'show']);
         Route::put('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'update']);
-        Route::delete('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'destroy']); 
+        Route::delete('/blog_categories/{Blogcategory:slug}',[BlogCategoryController::class,'destroy']);
+        #blogpost
+        Route::get('/blog_post',[BlogPostController::class,'index']);
+        Route::post('/blog_post',[BlogPostController::class,'store']);
+        Route::get('/blog_post/{BlogPost:slug}',[BlogPostController::class,'show']);
+        Route::put('/blog_post/{BlogPost:slug}',[BlogPostController::class,'update']);
+        Route::delete('/blog_post/{BlogPost:slug}',[BlogPostController::class,'destroy']);
     });
 });
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Cart;
+use App\Models\BlogPost;
+use App\Models\BlogCategory;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -47,5 +49,17 @@ class User extends Authenticatable
 
     public function cart (){
         return $this->hasMany(Cart::class);
+    }
+
+    public function blogCategory(){
+        return $this->hasMany(BlogCategory::class);
+    }
+
+    public function blogPost(){
+        return $this->hasMany(BlogPost::class);
+    }
+
+    public function comment(){
+        return $this->hasMany(Comment::class);
     }
 }
